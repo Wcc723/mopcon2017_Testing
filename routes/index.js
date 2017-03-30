@@ -1,33 +1,45 @@
-var express = require('express');
-var router = express.Router();
-var config = require('../setting/config');
+const express = require('express');
+const router = express.Router();
+const config = require('../setting/config');
+const SheetCtrl = require('../controllers/sheetCtrl');
+
+// Data
+let scheduleSheet = new SheetCtrl('schedule');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-const request = require("request");
+router.get('/schedule', (req, res, next)=> {
+  // console.log('scheduleSheet', scheduleSheet.data)
+  res.render('schedule', { title: 'Express', data: scheduleSheet.data});
+})
 
-var getApi = function(callback){
-  var shPath = config.spreadsheets.shPath,
-  shKey = config.spreadsheets.agenda.shKey,
-  shCallback = 'public/values?alt=json',
-  shList = config.spreadsheets.agenda.shList;
-  let path = '';
-  path = `${shPath}${shKey}/${shList}/${shCallback}`;
-  return request({
-    'url': path,
-    'json': true,
-  }, callback);
-}
-
-getApi(function(error, response, body){
-  console.log(response.body.feed.entry)
-  if (!error && response.statusCode === 200) {
-    var data = response.body;
-  }
+router.get('/:folder/:action', (req, res, next)=> {
+  let folder = req.param('folder')
+  let action = req.param('action')
+  // let params = req.params.all()
+  res.render(`/${folder}/${action}`, { title: 'Express' });
 });
-getApi();
+
+
+
+
+// Command
+// const spawn = require('child_process').spawn;
+// const ls = spawn('git', ['status']);
+
+// ls.stdout.on('data', (data) => {
+//   console.log(`stdout: ${data}`);
+// });
+
+// ls.stderr.on('data', (data) => {
+//   console.log(`stderr: ${data}`);
+// });
+
+// ls.on('close', (code) => {
+//   console.log(`child process exited with code ${code}`);
+// });
 
 module.exports = router;

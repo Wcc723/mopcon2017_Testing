@@ -1,48 +1,37 @@
-const request = require("request");
-const config = require('../setting/config');
+const request = require('request')
+const config = require('../setting/config')
 
-const getSheetData = function(shList, shKey, callback){
-  let shPath = config.spreadsheets.shPath,
-  shCallback = 'public/values?alt=json';
+const getSheetData = function (shList, shKey, callback) {
+  let shPath = config.spreadsheets.shPath
+  let shCallback = 'public/values?alt=json'
 
-  let path = `${shPath}${shKey}/${shList}/${shCallback}`;
+  let path = `${shPath}${shKey}/${shList}/${shCallback}`
   return request({
     'url': path,
-    'json': true,
-  }, callback);
+    'json': true
+  }, callback)
 }
 
-const SheetCtrl = function(name) {
+const SheetCtrl = function (name) {
   let vm = this
   vm.name = name
   let key = config.spreadsheets[vm.name].shKey
   let shList = config.spreadsheets[vm.name].shList
   let shKey = config.spreadsheets[key]
 
-  
-  // getApi 
+  // getApi
   vm.data = {}
-  vm.getData = ()=> {
-    return new Promise((resolve, reject)=> {
-      getSheetData(shList, shKey, function(error, response, body){
-        vm.data = response.body.feed.entry;
+  vm.getData = () => {
+    return new Promise((resolve, reject) => {
+      getSheetData(shList, shKey, function (error, response, body) {
+        vm.data = response.body.feed.entry
         return resolve(response.body.feed.entry)
-      });
-    }); 
+      })
+    })
   }
 
   // data = Google Sheet Data
   vm.getData()
 }
 
-
-
-// getApi(function(error, response, body){
-//   // console.log(response.body.feed.entry)
-//   if (!error && response.statusCode === 200) {
-//     var data = response.body;
-//   }
-// });
-// getApi();
-
-module.exports = SheetCtrl;
+module.exports = SheetCtrl

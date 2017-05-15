@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const config = require('../setting/config')
-const SheetCtrl = require('../controllers/sheetCtrl')
+const config = require('../../setting/config')
+const SheetCtrl = require('../../controllers/sheetCtrl')
 
 // Data
 let scheduleSheet = new SheetCtrl('schedule')
@@ -12,7 +12,8 @@ router.get('/', function (req, res, next) {
 })
 
 router.get('/schedule', (req, res, next) => {
-  res.render('schedule', { title: 'Express', data: scheduleSheet.data })
+  res.send(scheduleSheet.data)
+  res.end()
 })
 
 router.get('/:folder/:action', (req, res, next) => {
